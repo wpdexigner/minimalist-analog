@@ -18,8 +18,8 @@
         }
 
         .clock {
-            height: 320px;
-            width: 320px;
+            height: 220px;
+            width: 220px;
             border-radius: 50%;
             position: relative;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
@@ -42,7 +42,7 @@
         }
 
         .hour-hand {
-            height: 80px;
+            height: 60px;
             width: 4px;
             border-radius: 2px;
             background-color: #333;
@@ -50,7 +50,7 @@
         }
 
         .minute-hand {
-            height: 120px;
+            height: 80px;
             width: 2px;
             border-radius: 1px;
             background-color: #333;
@@ -59,7 +59,7 @@
 
         .second-hand {
             width: 1px;
-            height: 130px;
+            height: 100px;
             background-color: #ff6347;
             margin-left: -0.5px;
         }
@@ -72,7 +72,7 @@
             top: 50%;
             left: 50%;
             transform-origin: left;
-            transform: translate(calc(150px * cos(calc(var(--deg) * 1deg))), calc(150px * sin(calc(var(--deg) * 1deg)))) rotate(calc(var(--deg) * 1deg));
+            transform: translate(calc(100px * cos(calc(var(--deg) * 1deg))), calc(100px * sin(calc(var(--deg) * 1deg)))) rotate(calc(var(--deg) * 1deg));
         }
 
         .dot {
@@ -83,7 +83,7 @@
             top: 50%;
             left: 50%;
             transform-origin: left;
-            transform: translate(calc(160px * cos(calc(var(--deg) * 1deg))), calc(160px * sin(calc(var(--deg) * 1deg))));
+            transform: translate(calc(110px * cos(calc(var(--deg) * 1deg))), calc(110px * sin(calc(var(--deg) * 1deg))));
             border-radius: 50%;
         }
 
