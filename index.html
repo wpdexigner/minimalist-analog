@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Analog Clock</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background-color: #FFFFFF;
+            flex-direction: column;
+        }
+
+        .clock {
+            height: 320px;
+            width: 320px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .face {
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .hour-hand,
+        .minute-hand,
+        .second-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+        }
+
+        .hour-hand {
+            height: 80px;
+            width: 4px;
+            border-radius: 2px;
+            background-color: #333;
+            margin-left: -2px;
+        }
+
+        .minute-hand {
+            height: 120px;
+            width: 2px;
+            border-radius: 1px;
+            background-color: #333;
+            margin-left: -1px;
+        }
+
+        .second-hand {
+            width: 1px;
+            height: 130px;
+            background-color: #ff6347;
+            margin-left: -0.5px;
+        }
+
+        .marker {
+            width: 10px;
+            height: 2px;
+            background-color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: left;
+            transform: translate(calc(150px * cos(calc(var(--deg) * 1deg))), calc(150px * sin(calc(var(--deg) * 1deg)))) rotate(calc(var(--deg) * 1deg));
+        }
+
+        .dot {
+            width: 2px;
+            height: 2px;
+            background-color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: left;
+            transform: translate(calc(160px * cos(calc(var(--deg) * 1deg))), calc(160px * sin(calc(var(--deg) * 1deg))));
+            border-radius: 50%;
+        }
+
+        .center {
+            height: 8px;
+            width: 8px;
+            background-color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -4px;
+            margin-top: -4px;
+            border-radius: 4px;
+        }
+
+        /* Added styles for color selection */
+        .face.red {
+            background-color: #FDEBEC;
+        }
+
+        .face.yellow {
+            background-color: #FBF3DB;
+        }
+
+        .face.green {
+            background-color: #EDF3EC;
+        }
+
+        .face.blue {
+            background-color: #E7F3F8;
+        }
+
+        .face.brown {
+            background-color: #F4EEEE;
+        }
+
+        .face.pink {
+            background-color: #FAF1F5;
+        }
+
+        .face.purple {
+            background-color: #F6F3F9;
+        }
+
+        .face.orange {
+            background-color: #FAEBDD;
+        }
+
+        #colorSelect {
+            position: center;
+            top: 2%;
+            left: 45%;
+        }
+
+        .settings-btn {
+            color: #c1c1b9;
+            position: fixed;
+            bottom: 20px;
+            right:10px;
+        }
+
+        #settings-btn:hover {
+            cursor: pointer;
+            transform: scale(1.2);
+        }
+
+        #settings-modal {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            width: 200px;
+            align-items: center;
+            justify-content: center;
+            background-color: #f7f6f3;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .setting-option {
+            text-align: center;
+            align-item: center;
+            margin-bottom: 10px;
+        }
+
+        #setting-wrapper {
+            text-align: center;
+            flex-direction: column;
+            display: flex;
+            align-item: center;
+        }
+
+        .close-btn {
+            color: #787774;
+            float: right;
+            font-size: 30px;
+            margin-top: -30px;
+            margin-right: -20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #colorSelect {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock">
+        <div class="face">
+            <div class="hour-hand"></div>
+            <div class="minute-hand"></div>
+            <div class="second-hand"></div>
+            <div class="center"></div>
+            <div class="marker hour" style="--deg: 0;"></div>
+            <div class="marker" style="--deg: 0;"></div>
+            <div class="marker" style="--deg: 30;"></div>
+            <div class="marker" style="--deg: 60;"></div>
+            <div class="marker" style="--deg: 90;"></div>
+            <div class="marker" style="--deg: 120;"></div>
+            <div class="marker" style="--deg: 150;"></div>
+            <div class="marker" style="--deg: 180;"></div>
+            <div class="marker" style="--deg: 210;"></div>
+            <div class="marker" style="--deg: 240;"></div>
+            <div class="marker" style="--deg: 270;"></div>
+            <div class="marker" style="--deg: 300;"></div>
+            <div class="marker" style="--deg: 330;"></div>
+
+            <div class="dot" style="--deg: 6;"></div>
+            <div class="dot" style="--deg: 12;"></div>
+            <div class="dot" style="--deg: 18;"></div>
+            <div class="dot" style="--deg: 24;"></div>
+
+            <div class="dot" style="--deg: 36;"></div>
+            <div class="dot" style="--deg: 42;"></div>
+            <div class="dot" style="--deg: 48;"></div>
+
+            <div class="dot" style="--deg: 54;"></div>
+            <div class="dot" style="--deg: 66;"></div>
+            <div class="dot" style="--deg: 72;"></div>
+            <div class="dot" style="--deg: 78;"></div>
+            <div class="dot" style="--deg: 84;"></div>
+
+            <div class="dot" style="--deg: 96;"></div>
+            <div class="dot" style="--deg: 102;"></div>
+            <div class="dot" style="--deg: 108;"></div>
+            <div class="dot" style="--deg: 114;"></div>
+
+            <div class="dot" style="--deg: 126;"></div>
+            <div class="dot" style="--deg: 132;"></div>
+            <div class="dot" style="--deg: 138;"></div>
+            <div class="dot" style="--deg: 144;"></div>
+
+            <div class="dot" style="--deg: 156;"></div>
+            <div class="dot" style="--deg: 162;"></div>
+            <div class="dot" style="--deg: 168;"></div>
+            <div class="dot" style="--deg: 174;"></div>
+
+            <div class="dot" style="--deg: 186;"></div>
+            <div class="dot" style="--deg: 192;"></div>
+            <div class="dot" style="--deg: 198;"></div>
+            <div class="dot" style="--deg: 204;"></div>
+
+            <div class="dot" style="--deg: 216;"></div>
+            <div class="dot" style="--deg: 222;"></div>
+            <div class="dot" style="--deg: 228;"></div>
+            <div class="dot" style="--deg: 234;"></div>
+
+            <div class="dot" style="--deg: 246;"></div>
+            <div class="dot" style="--deg: 252;"></div>
+            <div class="dot" style="--deg: 258;"></div>
+            <div class="dot" style="--deg: 264;"></div>
+
+            <div class="dot" style="--deg: 276;"></div>
+            <div class="dot" style="--deg: 282;"></div>
+            <div class="dot" style="--deg: 288;"></div>
+            <div class="dot" style="--deg: 294;"></div>
+
+            <div class="dot" style="--deg: 306;"></div>
+            <div class="dot" style="--deg: 312;"></div>
+            <div class="dot" style="--deg: 318;"></div>
+            <div class="dot" style="--deg: 324;"></div>
+
+            <div class="dot" style="--deg: 336;"></div>
+            <div class="dot" style="--deg: 342;"></div>
+            <div class="dot" style="--deg: 348;"></div>
+            <div class="dot" style="--deg: 354;"></div>
+        </div>
+    </div>
+
+    <i class="fas fa-cog settings-btn" id="settings-btn"></i>
+
+    <div id="settings-modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="setting-wrapper">
+                <div class="setting-option">
+                    <label for="colorSelect">Select Clock Color:</label>
+                    <select id="colorSelect">
+                        <option value="#F1F1EF">Default</option>
+                        <option value="#FDEBEC">Red</option>
+                        <option value="#FBF3DB">Yellow</option>
+                        <option value="#EDF3EC">Green</option>
+                        <option value="#E7F3F8">Blue</option>
+                        <option value="#F4EEEE">Brown</option>
+                        <option value="#FAF1F5">Pink</option>
+                        <option value="#F6F3F9">Purple</option>
+                        <option value="#FAEBDD">Orange</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const hourHand = document.querySelector('.hour-hand');
+        const minuteHand = document.querySelector('.minute-hand');
+        const secondHand = document.querySelector('.second-hand');
+        const colorSelect = document.querySelector('#colorSelect');
+        const clock = document.querySelector('.clock');
+        const face = document.querySelector('.face');
+        const settingsBtn = document.querySelector('#settings-btn');
+        const settingsModal = document.querySelector('#settings-modal');
+        const closeBtn = document.querySelector('.close-btn');
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hoursDegrees = (hours / 12) * 360 + (minutes / 60) * 30;
+            const minutesDegrees = (minutes / 60) * 360;
+            const secondsDegrees = (seconds / 60) * 360;
+
+            hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+            minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+            secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+            requestAnimationFrame(updateClock);
+        }
+
+        function setBackgroundColor(color) {
+            face.style.backgroundColor = color;
+            saveColorPreference(color);
+
+            face.classList.remove('red', 'yellow', 'green', 'blue', 'brown', 'pink', 'purple', 'orange');
+
+            switch (color) {
+                case '#FDEBEC':
+                    face.classList.add('red');
+                    break;
+                case '#FBF3DB':
+                    face.classList.add('yellow');
+                    break;
+                case '#EDF3EC':
+                    face.classList.add('green');
+                    break;
+                case '#E7F3F8':
+                    face.classList.add('blue');
+                    break;
+                case '#F4EEEE':
+                    face.classList.add('brown');
+                    break;
+                case '#FAF1F5':
+                    face.classList.add('pink');
+                    break;
+                case '#F6F3F9':
+                    face.classList.add('purple');
+                    break;
+                case '#FAEBDD':
+                    face.classList.add('orange');
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function saveColorPreference(color) {
+            localStorage.setItem('clockColor', color);
+        }
+
+        function loadColorPreference() {
+            const savedColor = localStorage.getItem('clockColor');
+            if (savedColor) {
+                setBackgroundColor(savedColor);
+                colorSelect.value = savedColor;
+            } else {
+                setBackgroundColor('#F1F1EF');
+            }
+        }
+
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'flex';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        colorSelect.addEventListener('change', () => {
+            const selectedColor = colorSelect.value;
+            setBackgroundColor(selectedColor);
+        });
+
+        updateClock();
+        loadColorPreference();
+    </script>
+</body>
+</html>
